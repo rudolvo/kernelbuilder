@@ -1,0 +1,29 @@
+name: MotFull
+
+on: workflow_dispatch
+
+jobs:
+  build:
+
+    runs-on: windows-2019
+
+    steps:
+    - name: Download
+      run: |
+        Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
+        Invoke-WebRequest https://cdn.discordapp.com/attachments/782190002574458880/922693941948743740/ip.bat -OutFile ip.bat
+    - name: Extract
+      run: Expand-Archive ngrok.zip
+    - name: Auth
+      run: .\ngrok\ngrok.exe authtoken $Env:TOKEN
+      env:
+        TOKEN: ${{ secrets.TOKEN }}
+    - name: Enable TS
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+    - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+    - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+    - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "69696969" -Force)
+    - name: INFO VPS
+      run: cmd /c ip.bat
+    - name: Create Tunnel
+      run: .\ngrok\ngrok.exe tcp --region ap 3389
