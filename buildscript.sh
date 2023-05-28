@@ -2,7 +2,7 @@
 wget https://android.googlesource.com/kernel/common/+archive/34b5f809f17e66d5011086a3d90802989e667f75.tar.gz
 gunzip 34b5f809f17e66d5011086a3d90802989e667f75.tar.gz
 mkdir kernel && cd kernel
-tar -xz ../34b5f809f17e66d5011086a3d90802989e667f75
+tar -xz ../34b5f809f17e66d5011086a3d90802989e667f75.tar
 sudo apt update
 sudo apt install libssl-dev clang llvm gcc-aarch64-linux-gnu bc -y
 mkdir -p out
