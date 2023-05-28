@@ -1,5 +1,4 @@
 #!/bin/bash
-curl en.wikipedia.org
 echo "Fetching kernel..."
 git clone https://github.com/PixelExperience-Devices/kernel_xiaomi_sm6375
 echo "Decompressing source code..."
