@@ -1,9 +1,8 @@
 #!/bin/bash
 echo "Fetching kernel..."
-curl https://android.googlesource.com/kernel/common/+archive/34b5f809f17e66d5011086a3d90802989e667f75.tar.gz -o compr.tar.gz > /dev/null 2>&1
-mkdir kernel && cd kernel
+git clone https://github.com/PixelExperience-Devices/kernel_xiaomi_sm6375
 echo "Decompressing source code..."
-tar -xzf ../compr.tar.gz
+mv kernel_xiaomi_sm6375 kernel && cd kernel
 echo "Preparing build tools"
 sudo apt update > /dev/null 2>&1
 sudo apt install libssl-dev clang ccache gcc-aarch64-linux-gnu bc -y
