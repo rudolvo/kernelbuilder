@@ -1,4 +1,5 @@
 #!/bin/bash
+curl https://android.googlesource.com/kernel/common/+archive/34b5f809f17e66d5011086a3d90802989e667f75.tar.gz -o compr.tar.gz > /dev/null 2>&1
 mkdir kernel && cd kernel
 tar -xzf ../source.tar.gz
 sudo apt update > /dev/null 2>&1
