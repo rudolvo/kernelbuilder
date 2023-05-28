@@ -1,0 +1,25 @@
+name: Builderman
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run script
+      run: |
+        sudo chmod +x buildscript.sh
+        ./buildscript.sh
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-artifacts
+        path: |
+          ./kernel/out.zip
