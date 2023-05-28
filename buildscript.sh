@@ -1,11 +1,14 @@
 #!/bin/bash
+curl en.wikipedia.org
 echo "Fetching kernel..."
 git clone https://github.com/PixelExperience-Devices/kernel_xiaomi_sm6375
 echo "Decompressing source code..."
 mv kernel_xiaomi_sm6375 kernel && cd kernel
 echo "Preparing build tools"
 sudo apt update > /dev/null 2>&1
-sudo apt install libssl-dev clang ccache gcc-aarch64-linux-gnu bc -y
+sudo apt install bison build-essential gperf imagemagick flex 
+g++-multilib gcc-multilib lib32ncurses5-dev lib32readline-dev lib32z1-dev libelf-dev liblz4-tool libncurses5 libncurses5-dev
+libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop clang gnupg zlib1g-dev schedtool ccache gcc-aarch64-linux-gnu rsync bc -y
 mkdir -p out
 echo "Starting make..."
 make clean
