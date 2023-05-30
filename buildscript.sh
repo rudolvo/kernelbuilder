@@ -13,4 +13,4 @@ repo sync
 
 cd ..
 #git add ./kernel/*
-git commit -m "All files" > /dev/null 2>&1
+git commit -m "All files" #> /dev/null 2>&1
