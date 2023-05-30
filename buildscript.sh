@@ -18,7 +18,10 @@ mkdir common && cd common
 tar -xzf ../common.tar.gz
 rm ../common.tar.gz
 cd ..
-
 cd ..
-git add ./kernel/.
+
+zip -r source.zip kernel
+rm -rf kernel
+git lfs track source.zip
+git add .
 git commit -m "All files" #> /dev/null 2>&1
