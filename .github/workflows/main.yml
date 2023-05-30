@@ -16,11 +16,14 @@ jobs:
       run: |
         sudo chmod +x buildscript.sh
         ./buildscript.sh
-
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v2
+    - name: Push the changes
+      uses: ad-m/github-push-action@v0.6.0
       with:
-        name: Compiled images
-        path: |
-          ./kernel/root.zip
-          ./kernel/out.zip
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+#    - name: Upload artifacts
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: Compiled images
+#        path: |
+#          ./kernel/root.zip
+#          ./kernel/out.zip
