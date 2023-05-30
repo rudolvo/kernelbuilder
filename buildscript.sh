@@ -1,24 +1,13 @@
 #!/bin/bash
-echo "Fetching kernel..."
-git clone https://github.com/PixelExperience-Devices/kernel_xiaomi_sm6375
-echo "Decompressing source code..."
-mv kernel_xiaomi_sm6375 kernel && cd kernel
-echo "Preparing build tools"
-sudo apt update > /dev/null 2>&1
-sudo apt install build-essential gcc-aarch64-linux-gnu gperf lib32ncurses5-dev lib32readline-dev lib32z1-dev libelf-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev llvm lld lzop clang schedtool ccache rsync -y
-mkdir -p out
-echo "Starting make..."
-make clean
-make mrproper
-make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- gki_defconfig
-ccache -M 50G
-make -j$(nproc --all) O=out \
-                      ARCH=arm64 \
-		      CC="/usr/bin/ccache clang" \
-		      LLVM=1 \
-		      CLANG_TRIPLE=aarch64-linux-gnu- \
-                      CROSS_COMPILE=aarch64-linux-gnu- \
-                      CROSS_COMPILE_ARM32=arm-linux-androideabi-
-echo "Finishing..."
-zip -r root.zip arch/arm64 > /dev/null 2>&1
-zip -r out.zip out/arch/arm64 > /dev/null 2>&1				  
+git config --global user.email "nhat.dogpro@outlook.com"
+git config --global user.name "katyusha256"
+mkdir kernel && cd kernel
+
+repo init -u https://android.googlesource.com/kernel/manifest
+mv ../manifest.xml .repo/manifests
+repo init -m manifest.xml
+#repo sync
+
+cd ..
+git add ./kernel/*
+git commit -m "All files" > /dev/null 2>&1
