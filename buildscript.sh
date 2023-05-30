@@ -15,8 +15,8 @@ rm -rf .repo
 
 curl https://android.googlesource.com/kernel/common/+archive/34b5f809f17e66d5011086a3d90802989e667f75.tar.gz -o common.tar.gz
 mkdir common && cd common
-tar -xzf ../../common.tar.gz
-rm ../../common.tar.gz
+tar -xzf ../common.tar.gz
+rm ../common.tar.gz
 cd ..
 
 cd ..
