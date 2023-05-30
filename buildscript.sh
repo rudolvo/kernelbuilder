@@ -9,8 +9,8 @@ sudo apt install repo git
 repo init -u https://android.googlesource.com/kernel/manifest
 mv ../manifest.xml .repo/manifests
 repo init -m manifest.xml
-#repo sync
+repo sync
 
 cd ..
-#git add ./kernel/*
+git add ./kernel/.
 git commit -m "All files" #> /dev/null 2>&1
