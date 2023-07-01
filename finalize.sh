@@ -1,5 +1,5 @@
 #!/bin/bash
-if grep -q "Installing UAPI kernel headers:" build.log
+if grep -q "Files copied to" build.log
 then
     echo Workflow will take care the zip file.
 else

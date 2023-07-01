@@ -5,6 +5,7 @@ FILES="
 arch/arm64/boot/Image
 .version
 "
+SKIP_CP_KERNEL_HDR=1
 MAKEFLAGS=V=0
 LTO=thin
 DEFCONFIG=qgki_defconfig
