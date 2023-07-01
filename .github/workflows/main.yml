@@ -1,4 +1,4 @@
-name: Builderman
+name: Builder
 
 on:
   push:
@@ -14,18 +14,34 @@ jobs:
       with: 
         lfs: true
 
-    - name: Run script
+    - name: Download source
       run: |
-        sudo chmod +x buildscript.sh
-        ./buildscript.sh
-    - name: Push the changes
-      uses: ad-m/github-push-action@v0.6.0
+        sudo chmod +x getsource.sh
+        ./getsource.sh
+    
+    - name: Download prebuilts & scripts
+      run: |
+        sudo chmod +x gettools.sh
+        ./gettools.sh
+
+    - name: Import configs 
+      run: |
+        sudo chmod +x addconfig.sh
+        ./addconfig.sh
+
+    - name: Build kernel
+      run: |
+        sudo chmod +x startbuild.sh
+        ./startbuild.sh
+
+    - name: Pack to zip
+      run: |
+        sudo chmod +x finalize.sh
+        ./finalize.sh
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-#    - name: Upload artifacts
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: Compiled images
-#        path: |
-#          ./kernel/root.zip
-#          ./kernel/out.zip
+        name: Artifacts
+        path: |
+          ./build.log

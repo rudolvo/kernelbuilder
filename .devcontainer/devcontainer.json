@@ -1,9 +1,0 @@
-{
-  "name": "large",
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
-  "features": {},
-  "hostRequirements": {
-    "hostRequirements": {"cpus": 32},
-    "hostRequirements": {"memory": "16gb"}
-  }
-}
