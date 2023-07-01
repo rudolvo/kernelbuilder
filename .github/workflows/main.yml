@@ -43,8 +43,9 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: Logs & images
+        name: Logs & raw image
         path: |
           ./build.log
           ./out/android11-5.4/dist/Image
-          ./AnyKernel3/update.zip
+        name: Flashable zip
+        path: ./AnyKernel3/*
