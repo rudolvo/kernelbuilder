@@ -1,5 +1,6 @@
 LTO=none
 ARCH=arm64
+BRANCH=android11-5.4
 MAKE_GOALS=Image
 MAKEFLAGS=V=0
 DEFCONFIG=veux_defconfig

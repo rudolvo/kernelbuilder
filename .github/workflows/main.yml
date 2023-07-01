@@ -45,5 +45,4 @@ jobs:
         name: Artifacts
         path: |
           ./build.log
-
-          
+          ./out/android11-5.4/dist/Image
