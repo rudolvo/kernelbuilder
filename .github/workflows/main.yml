@@ -48,4 +48,6 @@ jobs:
           ./build.log
           ./out/android11-5.4/dist/Image
         name: Flashable zip
-        path: ./AnyKernel3/*
+        path: | 
+          ./AnyKernel3/*
+          ./build.log
