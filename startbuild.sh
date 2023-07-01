@@ -1,4 +1,7 @@
 #!/bin/bash
+echo Copying configs
+cp build.config.veux common/
+cp qgki_defconfig common/arch/arm64/configs/
 echo Available threads: $(nproc)
 echo .
 if grep -q "V=1" common/build.config.veux

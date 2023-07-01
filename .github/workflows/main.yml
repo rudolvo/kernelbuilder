@@ -25,11 +25,6 @@ jobs:
         sudo chmod +x gettools.sh
         ./gettools.sh
 
-    - name: Import configs 
-      run: |
-        sudo chmod +x addconfig.sh
-        ./addconfig.sh
-
     - name: Build kernel
       run: |
         sudo chmod +x startbuild.sh
@@ -41,10 +36,11 @@ jobs:
         ./finalize.sh
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Flashable zip
         path: | 
-          ./AnyKernel3/*
-          ./out/android11-5.4/dist/Image
+          ./AnyKernel3
+          ./out/android11-5.4/dist
           ./build.log
+          !out/android11-5.4/dist/kernel-uapi-headers.tar.gz
