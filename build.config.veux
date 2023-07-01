@@ -1,6 +1,7 @@
 ARCH=arm64
 BRANCH=android11-5.4
 MAKE_GOALS=Image
+FILES="arch/arm64/boot/Image"
 MAKEFLAGS=V=0
 LTO=thin
 DEFCONFIG=qgki_defconfig

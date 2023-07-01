@@ -1,5 +1,5 @@
 #!/bin/bash
-if grep -xq "Installing UAPI kernel headers:" build.log
+if grep -q "Installing UAPI kernel headers:" build.log
 then
     echo Adding Image to AnyKernel flashable zip...
     git clone https://github.com/karthik558/AnyKernel3
