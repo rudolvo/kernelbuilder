@@ -43,4 +43,3 @@ jobs:
           ./AnyKernel3
           ./out/android11-5.4/dist
           ./build.log
-          !out/android11-5.4/dist/kernel-uapi-headers.tar.gz
