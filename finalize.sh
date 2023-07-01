@@ -1,12 +1,8 @@
 #!/bin/bash
 if grep -q "Installing UAPI kernel headers:" build.log
 then
-    echo Adding Image to AnyKernel flashable zip...
-    git clone https://github.com/karthik558/AnyKernel3
-    cp ./out/android11-5.4/dist/Image ./AnyKernel3
-    cd AnyKernel3
-    rm .git README.md anykernel-real.sh .gitignore zipsigner* *.zip
+    echo Workflow will take care the zip file.
 else
-    echo Build failed. Exiting...
+    echo Build ended prematurely. Exiting...
     exit 2
 fi
