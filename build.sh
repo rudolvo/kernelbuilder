@@ -4,8 +4,6 @@ case $HOSTNAME in
   (*)  ISACTIONS=0 ;;
 esac
 
-if $ISACTIONS = 1 
-
 getsource () {
     git clone --depth=1 https://github.com/MiCode/Xiaomi_Kernel_OpenSource -b veux-r-oss common
 }
@@ -86,11 +84,12 @@ elif [[ "$1" == "finalize" ]]; then
     fi
 elif [[ "$1" == "debug-cleanup" ]]; then
     if [[ -n "$1" ]]; then
-        rm -rf common
-        rm -rf build
-        rm -rf prebuilts
-        rm -rf gcc
-        rm -rf out
+        rm -rf common/
+        rm -rf build/
+        rm -rf prebuilts/
+        rm -rf gcc/
+        rm -rf out/
+        rm -rf clang-r383902b1/
         rm build.log
     fi
 else
