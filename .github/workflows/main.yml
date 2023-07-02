@@ -1,8 +1,6 @@
-name: Builder
+name: Build standalone kernel
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -10,30 +8,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    - name: Pre-build setup
+      uses: actions/checkout@v3
       with: 
         lfs: true
 
     - name: Download source
       run: |
-        sudo chmod +x getsource.sh
-        ./getsource.sh
+        sudo chmod +x build.sh
+        ./build.sh getsource
     
     - name: Download prebuilts & scripts
       run: |
-        sudo chmod +x gettools.sh
-        ./gettools.sh
+        ./build.sh gettools
 
     - name: Build kernel
       run: |
-        sudo chmod +x startbuild.sh
-        ./startbuild.sh
+        ./build.sh startbuild
 
     - name: Post-build
       run: |
-        sudo chmod +x finalize.sh
-        ./finalize.sh
+        ./build.sh finalize
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
