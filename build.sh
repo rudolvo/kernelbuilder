@@ -25,14 +25,15 @@ gettools () {
     unzip -q ../lineageos-tc.zip
     cd ..
     echo ==================================
-    echo Installing additional dependencies
-    sudo apt update > /dev/null 2>&1
-    sudo apt install -y rsync
+    #echo Installing additional dependencies
+    #sudo apt update > /dev/null 2>&1
+    #sudo apt install -y rsync
 }
 startbuild () {
     echo Copying configs
     cp build.config.veux common/
     cp qgki_defconfig common/arch/arm64/configs/
+    cp common/arch/arm64/configs/vendor/veux_QGKI.config common/arch/arm64/configs/vendor
     echo Available threads: $(nproc)
     echo .
     if grep -q "V=1" common/build.config.veux
@@ -46,25 +47,33 @@ startbuild () {
 finalize () {
     if grep -q "Files copied to" build.log
     then
-        mv out/android11-5.4/dist/Image AnyKernel3
-        mv build.log AnyKernel3
+        cp out/android11-5.4/dist/Image AnyKernel3
+        cp build.log AnyKernel3
         echo Workflow will take care the zip file.
     else
         echo Build ended prematurely. Exiting...
         exit 2
     fi
 }
-if [ $1='getsource' ]; then
-    getsource
-    elif [ $1='gettools' ]; then
+if [[ "$1" == "getsource" ]]; then
+    if [[ -n "$1" ]]; then
+        getsource
+    fi
+elif [[ "$1" == "gettools" ]]; then
+    if [[ -n "$1" ]]; then
         gettools
-        elif [ $1='startbuild' ]; then
-            startbuild
-            elif [ $1='finalize' ]; then
-                finalize
+    fi
+elif [[ "$1" == "startbuild" ]]; then
+    if [[ -n "$1" ]]; then
+        startbuild
+    fi
+elif [[ "$1" == "finalize" ]]; then
+    if [[ -n "$1" ]]; then
+        finalize
+    fi
 else
-    echo Build will start in sequence.
-    
+    getsource
+    gettools
+    startbuild
+    finalize
 fi
-
-
