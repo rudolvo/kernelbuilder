@@ -33,7 +33,7 @@ startbuild () {
     echo Copying configs
     cp build.config.veux common/
     cp qgki_defconfig common/arch/arm64/configs/
-    cp common/arch/arm64/configs/vendor/veux_QGKI.config common/arch/arm64/configs/vendor
+    cp common/arch/arm64/configs/vendor/veux_QGKI.config common/arch/arm64/configs/vendor/perf_defconfig
     echo Available threads: $(nproc)
     echo .
     if grep -q "V=1" common/build.config.veux
