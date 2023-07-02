@@ -1,0 +1,7 @@
+common/
+build/
+prebuilts/
+gcc/
+clang-r383902b1/
+out/
+build.log

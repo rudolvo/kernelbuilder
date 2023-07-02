@@ -1,4 +1,11 @@
 #/bin/bash
+case $HOSTNAME in
+  (fv-az*)  ISACTIONS=1 ;;
+  (*)  ISACTIONS=0 ;;
+esac
+
+if $ISACTIONS = 1 
+
 getsource () {
     git clone --depth=1 https://github.com/MiCode/Xiaomi_Kernel_OpenSource -b veux-r-oss common
 }
@@ -33,8 +40,8 @@ startbuild () {
     echo Copying configs
     cp build.config.veux common/
     cp qgki_defconfig common/arch/arm64/configs/
-    cp common/arch/arm64/configs/vendor/veux_QGKI.config common/arch/arm64/configs/vendor/perf_defconfig
-    echo Available threads: $(nproc)
+    cp common/arch/arm64/configs/vendor/veux_QGKI.config common/arch/arm64/configs/perf_defconfig
+    echo Running on $HOSTNAME with $(nproc) threads
     echo .
     if grep -q "V=1" common/build.config.veux
     then
@@ -49,7 +56,13 @@ finalize () {
     then
         cp out/android11-5.4/dist/Image AnyKernel3
         cp build.log AnyKernel3
-        echo Workflow will take care the zip file.
+        if $ISACTIONS = 1 ; then echo Workflow will pack up zip file as artifact.
+        else
+            echo Packing to updater zip...
+            cd AnyKernel3
+            zip -r5 AnyKernel3_veux_$(date +%Y%m%d).zip .
+            mv *.zip .. && cd ..
+        fi
     else
         echo Build ended prematurely. Exiting...
         exit 2
@@ -70,6 +83,15 @@ elif [[ "$1" == "startbuild" ]]; then
 elif [[ "$1" == "finalize" ]]; then
     if [[ -n "$1" ]]; then
         finalize
+    fi
+elif [[ "$1" == "debug-cleanup" ]]; then
+    if [[ -n "$1" ]]; then
+        rm -rf common
+        rm -rf build
+        rm -rf prebuilts
+        rm -rf gcc
+        rm -rf out
+        rm build.log
     fi
 else
     getsource
