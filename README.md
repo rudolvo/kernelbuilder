@@ -13,6 +13,6 @@
 `./build.sh`
 ### Usage for `build.sh`:
 - (leave empty)  => run everything from start to end
-- `-ksu` => same, but integrates KernelSU
+- `KSU=1 ./build.sh` => same, but integrates KernelSU
 - `getsource`/`gettools`/`startbuild`/`finalize` => run a specific section of build process
 
