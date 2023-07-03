@@ -1,7 +1,7 @@
 #/bin/bash
 
 #Uncomment for a KernelSU build
-KSU=1
+#KSU=1
 
 case $HOSTNAME in
   (fv-az*)  ISACTIONS=1 ;;
@@ -19,12 +19,14 @@ gettools () {
     echo ==================================
     echo Downloading back-end build scripts
     git clone --depth=1 https://android.googlesource.com/kernel/build -b master-kernel-build-2021 build
-    elif [ ! -d "prebuilts" ]; then
+    fi
+    if [ ! -d "prebuilts" ]; then
     echo ============================
     echo Downloading build essentials
     git clone --depth=1 https://android.googlesource.com/kernel/prebuilts/build-tools -b master-kernel-build-2021 prebuilts/kernel-build-tools
     git clone --depth=1 https://android.googlesource.com/platform/prebuilts/build-tools -b master-kernel-build-2021 prebuilts/build-tools
-    elif [ ! -d "clang" ]; then
+    fi
+    if [ ! -d "clang" ]; then
     echo ===========================
     echo Downloading Clang toolchain
     #source: https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/refs/heads/android11-qpr2-release/clang-r383902b1/
@@ -35,7 +37,8 @@ gettools () {
     cd clang
     tar -xzf clang.zip
     cd ..
-    elif [ ! -d "gcc" ]; then
+    fi
+    if [ ! -d "gcc" ]; then
     echo ====================
     echo Extracting assembler
     #source: https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9
@@ -63,13 +66,13 @@ startbuild () {
     echo Android $(grep -m 1 "VERSION" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "PATCHLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "SUBLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ') '(commit' $(cd common && git rev-parse HEAD | cut -c 1-8)')'
     echo Calling back-end script...
     if [ $ISACTIONS = 1 ]; then
-        echo "GitHub Actions host detected, build log won't piped/redirected"
+        echo "INFO: GitHub Actions host detected, build log won't piped/redirected"
         #since Action's console is already a piped output, and Clang won't handle two pipes properly
-        echo "To retrieve logs, click the gear button next to "Search logs" then "Download log archive""
+        echo "INFO: To retrieve logs, click the gear button next to "Search logs" then "Download log archive""
         BUILD_CONFIG=common/build.config.veux build/build.sh
     elif grep -q "V=1" common/build.config.veux; then
         #Prevent console flooding in verbose mode
-        BUILD_CONFIG=common/build.config.veux build/build.sh > build.log 2>&1
+        BUILD_CONFIG=common/build.config.veux build/build.sh > build.log 2> >(tee -a build.log >&2)
     else
         BUILD_CONFIG=common/build.config.veux build/build.sh 2>&1 | tee build.log
     fi
