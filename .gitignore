@@ -2,6 +2,7 @@ common/
 build/
 prebuilts/
 gcc/
-clang-r383902b1/
+clang/
 out/
+KernelSU/
 build.log

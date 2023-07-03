@@ -11,7 +11,7 @@ esac
 getsource () {
     if [ ! -d "common" ]; then
     echo Downloading kernel source...
-    git clone --depth=1 https://github.com/MiCode/Xiaomi_Kernel_OpenSource -b veux-r-oss common
+    git clone --depth=1 https://github.com/RedEnemy30/kernel_xiaomi_veux common
     fi
 }
 gettools () {
@@ -57,7 +57,7 @@ startbuild () {
     cp build.config.veux common/
     cp qgki_defconfig common/arch/arm64/configs/
     cp common/arch/arm64/configs/vendor/veux_QGKI.config common/arch/arm64/configs/perf_defconfig
-    if [[ "$1" == *"-ksu"* ]] || [[ "$2" == *"-ksu"* ]] || [ $KSU = 1 ]; then
+    if grep -q "-ksu" $@ || [ $KSU = 1 ]; then
         echo Integrating KernelSU
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
     fi
@@ -103,14 +103,12 @@ if [ -n "$1" ]; then
             rm AnyKernel3/Image
             rm build.log
             ;;
+        "-ksu") getsource && gettools && startbuild && finalize ;;
         *)
             echo "Error: Invalid argument '$1'"
             exit 1
             ;;
     esac
 else
-    getsource
-    gettools
-    startbuild
-    finalize
+    getsource && gettools && startbuild && finalize
 fi
