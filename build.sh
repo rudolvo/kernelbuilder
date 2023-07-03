@@ -1,7 +1,7 @@
 #/bin/bash
 
 #Uncomment for a KernelSU build
-#KSU=1
+KSU=1
 
 case $HOSTNAME in
   (fv-az*)  ISACTIONS=1 ;;
