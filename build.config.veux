@@ -21,7 +21,7 @@ CROSS_COMPILE=aarch64-linux-android-
 CROSS_COMPILE_ARM32=arm-linux-androideabi-
 CLANG_TRIPLE=aarch64-linux-gnu-
 
-CLANG_PREBUILT_BIN=clang-r383902b1/bin
+CLANG_PREBUILT_BIN=clang/bin
 LINUX_GCC_CROSS_COMPILE_PREBUILTS_BIN=gcc
 
 BUILDTOOLS_PREBUILT_BIN=build/build-tools/path/linux-x86
