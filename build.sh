@@ -136,6 +136,7 @@ finalize () {
 }
 if [ -n "$1" ]; then
     case "$1" in
+        "envcheck") envcheck ;;
         "getsource") envcheck && getsource ;;
         "gettools") gettools ;;
         "startbuild") envcheck && startbuild ;;
