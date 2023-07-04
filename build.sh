@@ -57,9 +57,9 @@ gettools () {
     cd ..
     fi
     echo ==================================
-    #echo Installing additional dependencies
-    #sudo apt update > /dev/null 2>&1
-    #sudo apt install -y rsync
+    echo Installing additional dependencies
+    sudo apt update > /dev/null 2>&1
+    sudo apt install -y rsync
 }
 startbuild () {
     echo Copying configs
