@@ -33,6 +33,7 @@ envcheck () {
         echo "KernelSU is not enabled. If you have integrated KernelSU before, you might want to redownload source before building."
         fi
         echo .
+        if [ $ISACTIONS != 1 ]; then
         read -p "Are these settings correct? [Y/n] " answer
         case ${answer:0:1} in
             y|Y )
@@ -42,6 +43,7 @@ envcheck () {
             exit 1
             ;;
         esac
+        fi
         fi
     fi
 }

@@ -1,6 +1,12 @@
 # veux-kernelbuilder
 ## **Basic configuration**
 Whether you're building on remote server or locally, you ***must*** set basic variables before running. They are located at the top of `build.sh`
+- Recommended config:
+  `KERNEL_SOURCE=https://github.com/MiCode/Xiaomi_Kernel_OpenSource`
+
+  `ATBRANCH=veux-r-oss`
+  
+  `DEFCONFIG=qgki_defconfig`
 
 ## Build using Actions
 1. Fork this repo

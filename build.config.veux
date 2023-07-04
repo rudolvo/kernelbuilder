@@ -1,6 +1,9 @@
 ARCH=arm64
 BRANCH=android11-5.4
-MAKE_GOALS=Image
+MAKE_GOALS="
+Image
+modules
+"
 FILES="
 arch/arm64/boot/Image
 .version
@@ -20,6 +23,7 @@ STRIP=llvm-strip
 CROSS_COMPILE=aarch64-linux-android-
 CROSS_COMPILE_ARM32=arm-linux-androideabi-
 CLANG_TRIPLE=aarch64-linux-gnu-
+DEPMOD=depmod
 
 CLANG_PREBUILT_BIN=clang/bin
 LINUX_GCC_CROSS_COMPILE_PREBUILTS_BIN=gcc
