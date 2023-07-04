@@ -1,13 +1,13 @@
 #/bin/bash
 #############################
 #      REQUIRED SETUP
-KSU=1 # set to 1 to enable KernelSU; if not leave the same
+KSU=ndef # set to 1 to enable KernelSU; if not leave the same
 
-DEFCONFIG=qgki_defconfig # set preferred existing defconfig in arch/arm64/configs
+DEFCONFIG=ndef # set preferred existing defconfig in arch/arm64/configs
                # or if arch/arm64/configs does not contain it, specify 
                # a defconfig in THE SAME DIRECTORY WITH build.sh
                
-KERNEL_SOURCE=https://github.com/RedEnemy30/kernel_xiaomi_veux # set to a preferred remote URL (e.g https://github.com/torvalds/linux...)
+KERNEL_SOURCE=ndef # set to a preferred remote URL (e.g https://github.com/torvalds/linux...)
 
 ATBRANCH="" # if not changed, use default kernel branch
             # set to "-b <kernel branch name>" if you want to
@@ -20,8 +20,11 @@ esac
 
 getsource () {
     if [ ! -d "common" ]; then
+    echo ============================
     echo Downloading kernel source...
+    set -x
     git clone --depth=1 $KERNEL_SOURCE $ATBRANCH common
+    set +x
     fi
 }
 gettools () {
@@ -39,9 +42,10 @@ gettools () {
     if [ ! -d "clang" ]; then
     echo ===========================
     echo Downloading Clang toolchain
+    CLANGTC="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz"
     if [ $ISACTIONS = 1 ]; then
-    curl -s -o clang/clang.zip --create-dirs https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz
-    else curl -o clang/clang.zip --create-dirs https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz
+    curl -s -o clang/clang.zip --create-dirs ${CLANGTC}
+    else curl -o clang/clang.zip --create-dirs ${CLANGTC}
     fi
     cd clang
     tar -xzf clang.zip
@@ -72,9 +76,9 @@ startbuild () {
     fi
     echo Build started on $HOSTNAME with $(nproc) threads
     echo Target:
-    VSUFFIX="$(grep -m 1 "VERSION" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "PATCHLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "SUBLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ') '(commit' $(cd common && git rev-parse HEAD | cut -c 1-8)')'"
+    VSUFFIX="$(grep -m 1 "VERSION" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "PATCHLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "SUBLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ')"
     if [ $KSU = 1 ]; then VSUFFIX+="-KernelSU" ; fi
-    echo Android ${VSUFFIX}
+    echo "Android ${VSUFFIX} (commit $(cd common && git rev-parse HEAD))"
     echo Calling back-end script...
     if [ $ISACTIONS = 1 ]; then
         echo "INFO: GitHub Actions host detected, build log won't be piped/redirected"
@@ -154,3 +158,4 @@ if [ -n "$1" ]; then
 else
     envcheck && getsource && gettools && startbuild && finalize
 fi
+
