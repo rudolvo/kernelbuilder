@@ -3,38 +3,38 @@ name: Build standalone kernel
 on:
   push:
     branches:
-      - main
+      [ main ]
   workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-20.04
 
     steps:
+    - name: Setup environment variables
+      id: envi
+      run: |
+        ./build.sh envcheck
+        echo "::set-output name=date::$(date +'%Y%m%d-%H%M')"
+
     - name: Pre-build setup
       uses: actions/checkout@v3
       with: 
         lfs: true
 
     - name: Download source
-      run: |
-        sudo chmod +x build.sh
-        ./build.sh getsource
+      run: ./build.sh getsource
     
     - name: Download prebuilts & scripts
-      run: |
-        ./build.sh gettools
+      run: ./build.sh gettools
 
     - name: Build kernel
-      run: |
-        ./build.sh startbuild
+      run: ./build.sh startbuild
 
     - name: Post-build
-      run: |
-        ./build.sh finalize
+      run: ./build.sh finalize
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: AnyKernel3_veux
-        path: | 
-          ./AnyKernel3
+        name: AnyKernel3_veux_${{ steps.envi.outputs.date }}
+        path: ./AnyKernel3

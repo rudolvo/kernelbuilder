@@ -1,17 +1,54 @@
 #/bin/bash
+#############################
+#      REQUIRED SETUP
+KSU=ndef # set to 1 to enable KernelSU; if not leave the same
 
-#Uncomment for a KernelSU build
-KSU=1
+DEFCONFIG=ndef # set preferred existing defconfig in arch/arm64/configs
+               # or if arch/arm64/configs does not contain it, specify 
+               # a defconfig in THE SAME DIRECTORY WITH build.sh
+               
+KERNEL_SOURCE=ndef # set to a preferred remote URL (e.g https://github.com/torvalds/linux...)
+
+ATBRANCH="" # if not changed, use default kernel branch
+            # set to "-b <kernel branch name>" if you want to
+#############################
 
 case $HOSTNAME in
   (fv-az*)  ISACTIONS=1 ;;
   (*)  ISACTIONS=0 ;;
 esac
 
+envcheck () {
+    if [[ "$DEFCONFIG" == "ndef" ]]; then
+    echo "ERROR: You didn't complete first-time setup for building"
+    echo "Open the build.sh file and edit first lines"
+    exit 2
+    else
+        if [ $ISACTIONS != 1 ]; then
+        echo DEFCONFIG is $DEFCONFIG
+        echo Kernel source is set to $KERNEL_SOURCE
+        if [[ $KSU == 1 ]]; then
+        echo KernelSU is enabled for this build
+        else
+        echo KernelSU is not enabled. If you have integrated KernelSU before, you might want to redownload source before building.
+        fi
+        echo .
+        read -p "Are these settings correct? [Y/n] " answer
+        case ${answer:0:1} in
+            y|Y )
+            ;;
+            * )
+            echo "Go back and edit build.sh to your choice"
+            exit 1
+            ;;
+        esac
+        fi
+}
+
 getsource () {
     if [ ! -d "common" ]; then
     echo Downloading kernel source...
-    git clone --depth=1 https://github.com/RedEnemy30/kernel_xiaomi_veux common
+    git clone --depth=1 $KERNEL_SOURCE $ATBRANCH common
     fi
 }
 gettools () {
@@ -55,9 +92,9 @@ gettools () {
 startbuild () {
     echo Copying configs
     cp build.config.veux common/
-    cp qgki_defconfig common/arch/arm64/configs/
+    cp $DEFCONFIG common/arch/arm64/configs/
     cp common/arch/arm64/configs/vendor/veux_QGKI.config common/arch/arm64/configs/perf_defconfig
-    if grep -q "-ksu" $@ || [ $KSU = 1 ]; then
+    if [ $KSU = 1 ]; then
         echo Integrating KernelSU
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
     fi
@@ -66,15 +103,15 @@ startbuild () {
     echo Android $(grep -m 1 "VERSION" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "PATCHLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "SUBLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ') '(commit' $(cd common && git rev-parse HEAD | cut -c 1-8)')'
     echo Calling back-end script...
     if [ $ISACTIONS = 1 ]; then
-        echo "INFO: GitHub Actions host detected, build log won't piped/redirected"
+        echo "INFO: GitHub Actions host detected, build log won't be piped/redirected"
         #since Action's console is already a piped output, and Clang won't handle two pipes properly
         echo "INFO: To retrieve logs, click the gear button next to "Search logs" then "Download log archive""
-        BUILD_CONFIG=common/build.config.veux build/build.sh
+        DEFCONFIG="$DEFCONFIG" BUILD_CONFIG=common/build.config.veux build/build.sh
     elif grep -q "V=1" common/build.config.veux; then
         #Prevent console flooding in verbose mode
-        BUILD_CONFIG=common/build.config.veux build/build.sh > build.log 2> >(tee -a build.log >&2)
+        DEFCONFIG="$DEFCONFIG" BUILD_CONFIG=common/build.config.veux build/build.sh > build.log 2> >(tee -a build.log >&2)
     else
-        BUILD_CONFIG=common/build.config.veux build/build.sh 2>&1 | tee build.log
+        DEFCONFIG="$DEFCONFIG" BUILD_CONFIG=common/build.config.veux build/build.sh 2>&1 | tee build.log
     fi
 }
 finalize () {
@@ -84,7 +121,7 @@ finalize () {
         else
             echo Packing to updater zip...
             cd AnyKernel3
-            zip -r5 AnyKernel3_veux_$(date +%Y%m%d).zip .
+            zip -r5 AnyKernel3_veux_$(date +'%Y%m%d-%H%M').zip .
             mv *.zip .. && cd ..
         fi
     else
@@ -94,21 +131,20 @@ finalize () {
 }
 if [ -n "$1" ]; then
     case "$1" in
-        "getsource") getsource ;;
+        "getsource") envcheck && getsource ;;
         "gettools") gettools ;;
-        "startbuild") startbuild ;;
+        "startbuild") envcheck && startbuild ;;
         "finalize") finalize ;;
         "debug-cleanup")
             rm -rf common/ build/ prebuilts/ gcc/ out/ clang/ KernelSU/
             rm AnyKernel3/Image
             rm build.log
             ;;
-        "-ksu") getsource && gettools && startbuild && finalize ;;
         *)
             echo "Error: Invalid argument '$1'"
             exit 1
             ;;
     esac
 else
-    getsource && gettools && startbuild && finalize
+    envcheck && getsource && gettools && startbuild && finalize
 fi

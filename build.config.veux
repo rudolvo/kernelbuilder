@@ -5,10 +5,10 @@ FILES="
 arch/arm64/boot/Image
 .version
 "
+BUILD_INITRAMFS=1
 SKIP_CP_KERNEL_HDR=1
 MAKEFLAGS=V=0
 LTO=thin
-DEFCONFIG=veux_defconfig
 
 CC=clang
 LD=ld.lld
