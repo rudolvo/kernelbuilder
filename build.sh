@@ -18,36 +18,6 @@ case $HOSTNAME in
   (*)  ISACTIONS=0 ;;
 esac
 
-envcheck () {
-    if [[ "$DEFCONFIG" == "ndef" ]]; then
-    echo "ERROR: You didn't complete first-time setup for building"
-    echo "Open the build.sh file and edit first lines"
-    exit 2
-    else
-        if [ $ISACTIONS != 1 ]; then
-        echo DEFCONFIG is $DEFCONFIG
-        echo Kernel source is set to $KERNEL_SOURCE
-        if [[ $KSU == 1 ]]; then
-        echo "KernelSU is enabled for this build"
-        else
-        echo "KernelSU is not enabled. If you have integrated KernelSU before, you might want to redownload source before building."
-        fi
-        echo .
-        if [ $ISACTIONS != 1 ]; then
-        read -p "Are these settings correct? [Y/n] " answer
-        case ${answer:0:1} in
-            y|Y )
-            ;;
-            * )
-            echo "Go back and edit build.sh to your choice"
-            exit 1
-            ;;
-        esac
-        fi
-        fi
-    fi
-}
-
 getsource () {
     if [ ! -d "common" ]; then
     echo Downloading kernel source...
@@ -69,10 +39,9 @@ gettools () {
     if [ ! -d "clang" ]; then
     echo ===========================
     echo Downloading Clang toolchain
-    #source: https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/refs/heads/android11-qpr2-release/clang-r383902b1/
     if [ $ISACTIONS = 1 ]; then
-    curl -s -o clang/clang.zip --create-dirs https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz
-    else curl -o clang/clang.zip --create-dirs https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz
+    curl -s -o clang/clang.zip --create-dirs https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/master/clang-r487747c.tar.gz
+    else curl -o clang/clang.zip --create-dirs https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/master/clang-r487747c.tar.gz
     fi
     cd clang
     tar -xzf clang.zip
@@ -103,7 +72,9 @@ startbuild () {
     fi
     echo Build started on $HOSTNAME with $(nproc) threads
     echo Target:
-    echo Android $(grep -m 1 "VERSION" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "PATCHLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "SUBLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ') '(commit' $(cd common && git rev-parse HEAD | cut -c 1-8)')'
+    VSUFFIX="$(grep -m 1 "VERSION" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "PATCHLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "SUBLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ') '(commit' $(cd common && git rev-parse HEAD | cut -c 1-8)')'"
+    if [ $KSU = 1 ]; then VSUFFIX+="-KernelSU" ; fi
+    echo Android ${VSUFFIX}
     echo Calling back-end script...
     if [ $ISACTIONS = 1 ]; then
         echo "INFO: GitHub Actions host detected, build log won't be piped/redirected"
@@ -117,14 +88,45 @@ startbuild () {
         DEFCONFIG="$DEFCONFIG" BUILD_CONFIG=common/build.config.veux build/build.sh 2>&1 | tee build.log
     fi
 }
+envcheck () {
+    if [[ "$DEFCONFIG" == "ndef" ]]; then
+    echo "ERROR: You didn't complete first-time setup for building"
+    echo "Open the build.sh file and edit first lines"
+    exit 2
+    else
+        if [ $ISACTIONS != 1 ]; then
+        echo DEFCONFIG is $DEFCONFIG
+        echo Kernel source is set to $KERNEL_SOURCE
+        if [[ $KSU == 1 ]]; then
+        echo "KernelSU is enabled for this build"
+        else
+        echo "KernelSU is not enabled. If you have integrated KernelSU before, you might want to redownload source before building."
+        fi
+        echo .
+        if [ $ISACTIONS != 1 ]; then
+        read -p "Are these settings correct? [Y/n] " answer
+        case ${answer:0:1} in
+            y|Y )
+            ;;
+            * )
+            echo "Go back and edit build.sh to your choice"
+            exit 1
+            ;;
+        esac
+        fi
+        fi
+    fi
+}
 finalize () {
+    if [ $ISACTIONS = 1 ]; then mv out/android11-5.4/dist/vmlinux out/android11-5.4/ ; fi
     if [ -e "out/android11-5.4/dist/Image" ]; then
         cp out/android11-5.4/dist/Image AnyKernel3
         if [ $ISACTIONS = 1 ]; then echo Workflow will pack up zip file as artifact.
         else
+            echo =========================
             echo Packing to updater zip...
             cd AnyKernel3
-            zip -r5 AnyKernel3_veux_$(date +'%Y%m%d-%H%M').zip .
+            zip -r5 AnyKernel3_veux-${VSUFFIX}_$(date +'%Y%m%d-%H%M').zip .
             mv *.zip .. && cd ..
         fi
     else

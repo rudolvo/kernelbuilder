@@ -10,16 +10,12 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - name: Setup environment variables
+    - name: Build setup
+      uses: actions/checkout@v3
       id: envi
       run: |
         ./build.sh envcheck
         echo "::set-output name=date::$(date +'%Y%m%d-%H%M')"
-
-    - name: Pre-build setup
-      uses: actions/checkout@v3
-      with: 
-        lfs: true
 
     - name: Download source
       run: ./build.sh getsource
@@ -32,9 +28,17 @@ jobs:
 
     - name: Post-build
       run: ./build.sh finalize
+      env: 
+        VSUFFIX: ${{ env.VSUFFIX }}
 
-    - name: Upload artifacts
+    - name: Upload updater zip
       uses: actions/upload-artifact@v3
       with:
-        name: AnyKernel3_veux_${{ steps.envi.outputs.date }}
+        name: AnyKernel3_veux-_${{ steps.envi.outputs.date }}
         path: ./AnyKernel3
+    
+    - name: Upload modules
+      uses: action/upload-artifact@v3
+      with: 
+        name: Modules_veux-${VSUFFIX}_${{ steps.envi.outputs.date }}
+        path: ./out

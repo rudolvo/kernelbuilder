@@ -6,10 +6,13 @@ modules
 "
 FILES="
 arch/arm64/boot/Image
+vmlinux
+System.map
 .version
 "
 BUILD_INITRAMFS=1
-SKIP_CP_KERNEL_HDR=1
+IN_KERNEL_MODULES=1
+DO_NOT_STRIP_MODULES=1
 MAKEFLAGS=V=0
 LTO=thin
 
