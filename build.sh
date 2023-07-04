@@ -28,9 +28,9 @@ envcheck () {
         echo DEFCONFIG is $DEFCONFIG
         echo Kernel source is set to $KERNEL_SOURCE
         if [[ $KSU == 1 ]]; then
-        echo KernelSU is enabled for this build
+        echo "KernelSU is enabled for this build"
         else
-        echo KernelSU is not enabled. If you have integrated KernelSU before, you might want to redownload source before building.
+        echo "KernelSU is not enabled. If you have integrated KernelSU before, you might want to redownload source before building."
         fi
         echo .
         read -p "Are these settings correct? [Y/n] " answer
@@ -43,6 +43,7 @@ envcheck () {
             ;;
         esac
         fi
+    fi
 }
 
 getsource () {
