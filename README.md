@@ -4,7 +4,7 @@ Whether you're building on remote server or locally, you ***must*** set basic va
 - Recommended config:
   `KERNEL_SOURCE=https://github.com/MiCode/Xiaomi_Kernel_OpenSource`
 
-  `ATBRANCH=veux-r-oss`
+  `ATBRANCH="-b veux-r-oss"`
   
   `DEFCONFIG=qgki_defconfig`
 
