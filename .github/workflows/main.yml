@@ -14,10 +14,9 @@ jobs:
       uses: actions/checkout@v3
     
     - name: Build setup
-      id: envi
       run: |
         ./build.sh envcheck
-        echo "::set-output name=date::$(date +'%Y%m%d-%H%M')"
+        echo "date=$(date +'%Y%m%d-%H%M')" >> "$GITHUB_ENV"
 
     - name: Download source
       run: ./build.sh getsource
@@ -29,18 +28,18 @@ jobs:
       run: ./build.sh startbuild
 
     - name: Post-build
-      run: ./build.sh finalize
-      env: 
-        VSUFFIX: ${{ env.VSUFFIX }}
+      run: |
+        ./build.sh finalize
+        echo "${VSUFFIX}"" >> "$GITHUB_ENV"
 
     - name: Upload updater zip
       uses: actions/upload-artifact@v3
       with:
-        name: AnyKernel3_veux-_${{ steps.envi.outputs.date }}
+        name: AnyKernel3_veux-${{ env.sfx }}_${{ env.date }}
         path: ./AnyKernel3
     
-    - name: Upload modules
+    - name: Upload kernel modules
       uses: actions/upload-artifact@v3
       with: 
-        name: Modules_veux-${VSUFFIX}_${{ steps.envi.outputs.date }}
-        path: ./out
+        name: Modules_veux-${{ env.sfx }}_${{ env.date }}
+        path: ./out/android11-5.4/dist
