@@ -1,13 +1,13 @@
 #/bin/bash
 #############################
 #      REQUIRED SETUP
-KSU=ndef # set to 1 to enable KernelSU; if not leave the same
+KSU=1 # set to 1 to enable KernelSU; if not leave the same
 
-DEFCONFIG=ndef # set preferred existing defconfig in arch/arm64/configs
+DEFCONFIG=qgki_defconfig # set preferred existing defconfig in arch/arm64/configs
                # or if arch/arm64/configs does not contain it, specify 
                # a defconfig in THE SAME DIRECTORY WITH build.sh
                
-KERNEL_SOURCE=ndef # set to a preferred remote URL (e.g https://github.com/torvalds/linux...)
+KERNEL_SOURCE=https://github.com/RedEnemy30/kernel_xiaomi_veux # set to a preferred remote URL (e.g https://github.com/torvalds/linux...)
 
 ATBRANCH="" # if not changed, use default kernel branch
             # set to "-b <kernel branch name>" if you want to
