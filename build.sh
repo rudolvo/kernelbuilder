@@ -1,17 +1,17 @@
 #/bin/bash
 #############################
 #      REQUIRED SETUP
-KSU=1 # set to 1 to enable KernelSU; if not leave the same
+KSU=ndef # set to 1 to enable KernelSU; if not leave the same
 
-DEFCONFIG=qgki_defconfig # set preferred existing defconfig in arch/arm64/configs
+DEFCONFIG=ndef # set preferred existing defconfig in arch/arm64/configs
                # or if arch/arm64/configs does not contain it, specify 
                # a defconfig in THE SAME DIRECTORY WITH build.sh
                
-KERNEL_SOURCE=https://github.com/RedEnemy30/kernel_xiaomi_veux # set to a preferred remote URL (e.g https://github.com/torvalds/linux...)
+KERNEL_SOURCE=ndef # set to a preferred remote URL (e.g https://github.com/torvalds/linux...)
 
 KBRANCH="" # if not changed, use default kernel branch
            # set to "-b <kernel branch name>" if you want to
-CLANGTC="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz"
+CLANGDL="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz"
         # direct link to Clang toolchain
 #############################
 
