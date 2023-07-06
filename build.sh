@@ -28,6 +28,7 @@ getsource () {
     fi
 }
 gettools () {
+    set -x
     if [ ! -d "build" ]; then
     echo ==================================
     echo Downloading back-end build scripts
@@ -61,11 +62,13 @@ gettools () {
     cd ..
     fi
     echo ==================================
-    echo Installing additional dependencies
-    sudo apt update > /dev/null 2>&1
-    sudo apt install -y rsync
+    #echo Installing additional dependencies
+    #sudo apt update > /dev/null 2>&1
+    #sudo apt install -y rsync
+    set +x
 }
 startbuild () {
+    set -x
     echo Copying configs
     cp build.config.veux common/
     cp $DEFCONFIG common/arch/arm64/configs/
@@ -74,15 +77,17 @@ startbuild () {
         echo Integrating KernelSU
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
     fi
+    set +x
     echo ================================================
     echo Build started on $HOSTNAME with $(nproc) threads
     echo Target:
     VSUFFIX="$(grep -m 1 "VERSION" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "PATCHLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "SUBLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ')"
     if [ $KSU = 1 ]; then VSUFFIX+="-KernelSU" ; fi
     echo "Android ${VSUFFIX} (commit $(cd common && git rev-parse HEAD))"
-    echo "${VSUFFIX}" > VERSION.txt
+    echo $VSUFFIX > VERSION.txt
     echo ================================================
     echo Calling back-end script...
+    set -x
     if [ $ISACTIONS = 1 ]; then
         echo "INFO: GitHub Actions host detected, build log won't be piped/redirected"
         #since Action's console is already a piped output, and Clang won't handle two pipes properly
@@ -94,6 +99,7 @@ startbuild () {
     else
         DEFCONFIG="$DEFCONFIG" BUILD_CONFIG=common/build.config.veux build/build.sh 2>&1 | tee build.log
     fi
+    set +x
 }
 envcheck () {
     if [[ "$DEFCONFIG" == "ndef" ]]; then
@@ -127,6 +133,9 @@ envcheck () {
 finalize () {
     if [ $ISACTIONS = 1 ]; then mv out/android11-5.4/dist/vmlinux out/android11-5.4/ ; fi
     if [ -e "out/android11-5.4/dist/Image" ]; then
+        set -x
+        sed -i 's/unknownversion/$(cat VERSION.txt)/g'
+        if [ $KSU = 1 ]; then sed -i 's/do.systemless=0/do.systemless=1/g'; fi
         cp out/android11-5.4/dist/Image AnyKernel3
         if [ $ISACTIONS = 1 ]; then echo Workflow will pack up zip file as artifact.
         else
@@ -136,6 +145,7 @@ finalize () {
             zip -r5 AnyKernel3_veux-${VSUFFIX}_$(date +'%Y%m%d-%H%M').zip .
             mv *.zip .. && cd ..
         fi
+        set +x
     else
         echo Build ended prematurely. Exiting...
         exit 2
