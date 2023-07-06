@@ -9,8 +9,10 @@ DEFCONFIG=qgki_defconfig # set preferred existing defconfig in arch/arm64/config
                
 KERNEL_SOURCE=https://github.com/RedEnemy30/kernel_xiaomi_veux # set to a preferred remote URL (e.g https://github.com/torvalds/linux...)
 
-ATBRANCH="" # if not changed, use default kernel branch
-            # set to "-b <kernel branch name>" if you want to
+KBRANCH="" # if not changed, use default kernel branch
+           # set to "-b <kernel branch name>" if you want to
+CLANGTC="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz"
+        # direct link to Clang toolchain
 #############################
 
 case $HOSTNAME in
@@ -23,7 +25,7 @@ getsource () {
     echo ============================
     echo Downloading kernel source...
     set -x
-    git clone --depth=1 $KERNEL_SOURCE $ATBRANCH common
+    git clone --depth=1 $KERNEL_SOURCE $KBRANCH common
     set +x
     fi
 }
@@ -43,10 +45,9 @@ gettools () {
     if [ ! -d "clang" ]; then
     echo ===========================
     echo Downloading Clang toolchain
-    CLANGTC="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz"
     if [ $ISACTIONS = 1 ]; then
-    curl -s -o clang/clang.zip --create-dirs ${CLANGTC}
-    else curl -o clang/clang.zip --create-dirs ${CLANGTC}
+    curl -s -o clang/clang.zip --create-dirs ${CLANGDL}
+    else curl -o clang/clang.zip --create-dirs ${CLANGDL}
     fi
     cd clang
     tar -xzf clang.zip
@@ -90,7 +91,6 @@ startbuild () {
     set -x
     if [ $ISACTIONS = 1 ]; then
         echo "INFO: GitHub Actions host detected, build log won't be piped/redirected"
-        #since Action's console is already a piped output, and Clang won't handle two pipes properly
         echo "INFO: To retrieve logs, click the gear button next to "Search logs" then "Download log archive""
         DEFCONFIG="$DEFCONFIG" BUILD_CONFIG=common/build.config.veux build/build.sh
     elif grep -q "V=1" common/build.config.veux; then
@@ -103,17 +103,16 @@ startbuild () {
 }
 envcheck () {
     if [[ "$DEFCONFIG" == "ndef" ]]; then
-    echo "ERROR: You didn't complete first-time setup for building"
+    echo "ERROR: You didn't complete first-time setup"
     echo "Open the build.sh file and edit first lines"
     exit 2
     else
-        if [ $ISACTIONS != 1 ]; then
         echo DEFCONFIG is $DEFCONFIG
         echo Kernel source is set to $KERNEL_SOURCE
         if [[ $KSU == 1 ]]; then
-        echo "KernelSU is enabled for this build"
-        else
-        echo "KernelSU is not enabled. If you have integrated KernelSU before, you might want to redownload source before building."
+            echo "KernelSU is enabled for this build"
+            else
+            echo "KernelSU is not enabled. If you have integrated KernelSU before, you might want to redownload source before building."
         fi
         echo .
         if [ $ISACTIONS != 1 ]; then
@@ -126,7 +125,6 @@ envcheck () {
             exit 1
             ;;
         esac
-        fi
         fi
     fi
 }
@@ -164,7 +162,7 @@ if [ -n "$1" ]; then
             rm build.log
             ;;
         *)
-            echo "Error: Invalid argument '$1'"
+            echo "Unknown option '$1'"
             exit 1
             ;;
     esac
