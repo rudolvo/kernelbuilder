@@ -6,3 +6,4 @@ clang/
 out/
 KernelSU/
 build.log
+VERSION.txt

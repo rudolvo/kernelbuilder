@@ -4,7 +4,7 @@ Whether you're building on remote server or locally, you ***must*** set basic va
 - Recommended config:
   `KERNEL_SOURCE=https://github.com/MiCode/Xiaomi_Kernel_OpenSource`
 
-  `ATBRANCH="-b veux-r-oss"`
+  `KBRANCH="-b veux-r-oss"`
   
   `DEFCONFIG=qgki_defconfig`
 
@@ -16,7 +16,7 @@ Whether you're building on remote server or locally, you ***must*** set basic va
   
 ## Build on local host
 `git clone https://github.com/cachiusa/veux-kernelbuilder
-./build.sh`
+cd veux-kernelbuilder && ./build.sh`
 ### Usage for `build.sh`:
 - (leave empty)  => run everything from start to end
 - `getsource`/`gettools`/`startbuild`/`finalize` => run a specific section of build process
