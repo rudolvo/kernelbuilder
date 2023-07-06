@@ -74,11 +74,14 @@ startbuild () {
         echo Integrating KernelSU
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
     fi
+    echo ================================================
     echo Build started on $HOSTNAME with $(nproc) threads
     echo Target:
     VSUFFIX="$(grep -m 1 "VERSION" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "PATCHLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ').$(grep -m 1 "SUBLEVEL" common/Makefile | sed 's/.*= *//' | tr -d ' ')"
     if [ $KSU = 1 ]; then VSUFFIX+="-KernelSU" ; fi
     echo "Android ${VSUFFIX} (commit $(cd common && git rev-parse HEAD))"
+    echo "${VSUFFIX}" > VERSION.txt
+    echo ================================================
     echo Calling back-end script...
     if [ $ISACTIONS = 1 ]; then
         echo "INFO: GitHub Actions host detected, build log won't be piped/redirected"

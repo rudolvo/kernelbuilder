@@ -30,7 +30,7 @@ jobs:
     - name: Post-build
       run: |
         ./build.sh finalize
-        echo "${VSUFFIX}" >> "$GITHUB_ENV"
+        cat VERSION.txt >> "$GITHUB_ENV"
 
     - name: Upload updater zip
       uses: actions/upload-artifact@v3
