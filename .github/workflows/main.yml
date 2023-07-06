@@ -37,9 +37,3 @@ jobs:
       with:
         name: AnyKernel3_veux-${{ env.sfx }}_${{ env.date }}
         path: ./AnyKernel3
-    
-    - name: Upload kernel modules
-      uses: actions/upload-artifact@v3
-      with: 
-        name: Modules_veux-${{ env.sfx }}_${{ env.date }}
-        path: ./out/android11-5.4/dist

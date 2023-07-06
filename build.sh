@@ -1,13 +1,13 @@
 #/bin/bash
 #############################
 #      REQUIRED SETUP
-KSU=ndef # set to 1 to enable KernelSU; if not leave the same
+KSU=1 # set to 1 to enable KernelSU; if not leave the same
 
-DEFCONFIG=ndef # set preferred existing defconfig in arch/arm64/configs
+DEFCONFIG=qgki_defconfig # set preferred existing defconfig in arch/arm64/configs
                # or if arch/arm64/configs does not contain it, specify 
                # a defconfig in THE SAME DIRECTORY WITH build.sh
                
-KERNEL_SOURCE=ndef # set to a preferred remote URL (e.g https://github.com/torvalds/linux...)
+KERNEL_SOURCE=https://github.com/RedEnemy30/kernel_xiaomi_veux # set to a preferred remote URL (e.g https://github.com/torvalds/linux...)
 
 ATBRANCH="" # if not changed, use default kernel branch
             # set to "-b <kernel branch name>" if you want to
@@ -131,12 +131,12 @@ envcheck () {
     fi
 }
 finalize () {
-    if [ $ISACTIONS = 1 ]; then mv out/android11-5.4/dist/vmlinux out/android11-5.4/ ; fi
     if [ -e "out/android11-5.4/dist/Image" ]; then
         set -x
         sed -i 's/unknownversion/$(cat VERSION.txt)/g'
         if [ $KSU = 1 ]; then sed -i 's/do.systemless=0/do.systemless=1/g'; fi
         cp out/android11-5.4/dist/Image AnyKernel3
+        cp out/android11-5.4/dist/*.ko AnyKernel3/modules/system/lib/modules
         if [ $ISACTIONS = 1 ]; then echo Workflow will pack up zip file as artifact.
         else
             echo =========================
