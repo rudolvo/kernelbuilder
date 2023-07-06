@@ -127,7 +127,7 @@ envcheck () {
 finalize () {
     if [ -e "out/android11-5.4/dist/Image" ]; then
         sed -i 's/unknownversion/$(cat VERSION.txt)/g'
-        if [ $KSU = 1 ]; then sed -i 's/do.systemless=0/do.systemless=1/g'
+        if [ $KSU = 1 ]; then sed -i 's/do.systemless=0/do.systemless=1/g'; fi
         cp out/android11-5.4/dist/Image AnyKernel3
         cp out/android11-5.4/dist/*.ko AnyKernel3/modules/system/lib/modules
         if [ $ISACTIONS = 1 ]; then echo Workflow will pack up zip file as artifact.
