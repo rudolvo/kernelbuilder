@@ -74,8 +74,12 @@ startbuild () {
     cp $DEFCONFIG common/arch/arm64/configs/
     cp common/arch/arm64/configs/vendor/veux_QGKI.config common/arch/arm64/configs/perf_defconfig
     if [ $KSU = 1 ]; then
+        if [[ ! -d common/drivers/kernelsu ]]; then
         echo Integrating KernelSU
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+        else
+        echo "KernelSU drivers already added to source, skipping setup script."
+        fi
     fi
     set +x
     echo ================================================
@@ -133,8 +137,8 @@ envcheck () {
 finalize () {
     if [ -e "out/android11-5.4/dist/Image" ]; then
         set -x
-        sed -i 's/unknownversion/$(cat VERSION.txt)/g'
-        if [ $KSU = 1 ]; then sed -i 's/do.systemless=0/do.systemless=1/g'; fi
+        sed -i 's/unknownversion/$(cat VERSION.txt)/g' AnyKernel3/anykernel.sh
+        if [ $KSU = 1 ]; then sed -i 's/do.systemless=0/do.systemless=1/g' AnyKernel3/anykernel.sh ; fi
         cp out/android11-5.4/dist/Image AnyKernel3
         cp out/android11-5.4/dist/*.ko AnyKernel3/modules/system/lib/modules
         if [ $ISACTIONS = 1 ]; then echo Workflow will pack up zip file as artifact.
