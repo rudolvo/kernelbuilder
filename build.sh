@@ -7,7 +7,7 @@ DEFCONFIG=ndef # set preferred existing defconfig in arch/arm64/configs
                # or if arch/arm64/configs does not contain it, specify 
                # a defconfig in THE SAME DIRECTORY WITH build.sh
                
-KERNEL_SOURCE=ndef # set to a preferred remote URL (e.g https://github.com/torvalds/linux...)
+KERNEL_SOURCE=https://github.com/donvito007/kernel_xiaomi_sm8350-1
 
 KBRANCH="" # if not changed, use default kernel branch
            # set to "-b <kernel branch name>" if you want to
